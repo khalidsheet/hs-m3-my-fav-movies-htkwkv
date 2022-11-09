@@ -21,12 +21,16 @@ level 7: The multiselectors are nice, but it would be great to also have a check
 bonus level: Apply your CSS magic and designer's touch to make the app look great!
 */
 
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import movies from "./assets/movies.json";
 import MovieChip from "./components/MovieChip.vue";
 
 const favoriteMovie = ref("");
 const watchedList = ref([]);
+
+const selectMyFavoriteMovie = (movie) => {
+  favoriteMovie.value = movie.title;
+};
 </script>
 
 <template>
@@ -40,17 +44,29 @@ const watchedList = ref([]);
       >
         <div class="card mb-3" style="max-width: 540px">
           <div class="row g-0">
-            <div class="col-md-4">
+            <div class="img-container col-md-4">
               <img
                 :src="movie.picture"
                 :alt="movie.title"
                 class="img-fluid rounded-start"
               />
+              <div
+                class="favorite-checked"
+                @click="selectMyFavoriteMovie(movie)"
+              >
+                <img
+                  :src="
+                    favoriteMovie === movie.title
+                      ? `./src/assets/heart-filled.svg`
+                      : `./src/assets/heart.svg`
+                  "
+                />
+              </div>
             </div>
             <div class="col-md-8">
               <div class="card-body">
                 <h5 class="card-title">{{ movie.title }}</h5>
-                <p class="card-text">
+                <div class="card-text">
                   <svg
                     v-for="(_, i) in parseInt((movie.score * 5) / 100)"
                     :key="i"
@@ -83,23 +99,21 @@ const watchedList = ref([]);
                       style="marker: none"
                     />
                   </svg>
-                </p>
-                <p class="card-text">
-                  <small class="text-muted"
-                    ><div class="form-check">
-                      <input
-                        type="checkbox"
-                        :id="'checked' + i"
-                        :value="movie.title"
-                        v-model="watchedList"
-                        class="form-check-input"
-                      />
-                      <label class="form-check-label" :for="'checked' + i"
-                        >Watched</label
-                      >
-                    </div></small
-                  >
-                </p>
+                </div>
+                <div class="card-text">
+                  <div class="form-check">
+                    <input
+                      type="checkbox"
+                      :id="'checked' + i"
+                      :value="movie.title"
+                      v-model="watchedList"
+                      class="form-check-input"
+                    />
+                    <label class="form-check-label" :for="'checked' + i">
+                      Watched
+                    </label>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -118,7 +132,12 @@ const watchedList = ref([]);
         class="form-select"
       >
         <option disabled value="">Please select a favorite!</option>
-        <option v-for="movie in movies" :value="movie.title" :key="movie.id">
+        <option
+          v-for="movie in movies"
+          :value="movie.title"
+          :key="movie.id"
+          :selected="movie.title == favoriteMovie ? 'selected' : null"
+        >
           {{ movie.title }}
           <template v-if="favoriteMovie == movie.title">😍</template>
         </option>
@@ -164,9 +183,9 @@ const watchedList = ref([]);
             v-model="watchedList"
             class="form-check-input"
           />
-          <label :for="'option' + i" class="form-check-label">{{
-            movie.title
-          }}</label>
+          <label :for="'option' + i" class="form-check-label">
+            {{ movie.title }}
+          </label>
         </div>
 
         <br />
@@ -191,5 +210,29 @@ input[type="checkbox"],
 label,
 select {
   cursor: pointer;
+}
+
+.favorite-checked {
+  width: 100% !important;
+  height: 46px !important;
+  position: absolute;
+  left: 0;
+  padding: 0 10px;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background: #00000038;
+  background: linear-gradient(180deg, #00000038 60%, transparent 100%);
+  cursor: pointer;
+}
+
+.favorite-checked img {
+  height: 32px !important;
+  width: 32px !important;
+}
+
+.img-container {
+  position: relative;
 }
 </style>
