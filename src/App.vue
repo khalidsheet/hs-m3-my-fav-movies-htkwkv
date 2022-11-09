@@ -21,134 +21,175 @@ level 7: The multiselectors are nice, but it would be great to also have a check
 bonus level: Apply your CSS magic and designer's touch to make the app look great!
 */
 
-import { ref } from 'vue';
-import movies from './assets/movies.json';
+import { ref } from "vue";
+import movies from "./assets/movies.json";
+import MovieChip from "./components/MovieChip.vue";
 
-const favoriteMovie = ref('');
+const favoriteMovie = ref("");
 const watchedList = ref([]);
-
-console.log(watchedList);
 </script>
 
 <template>
-  <h3>Movie list</h3>
-  <div class="post">
-    <div class="poster" v-for="(movie, i) in movies" :key="movie.id">
-      <img :src="movie.picture" :alt="movie.title" />
-      <div class="movie__title">{{ movie.title }}</div>
-      <div class="movie__score">
-        <svg
-          v-for="_ in parseInt((movie.score * 5) / 100)"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          width="16"
-          height="16"
-        >
-          <defs>
-            <linearGradient
-              id="b"
-              x1="-1483.396"
-              x2="-1155.767"
-              y1="1056.787"
-              y2="1056.787"
-              gradientUnits="userSpaceOnUse"
-              xlink:href="#a"
-            />
-            <linearGradient id="a">
-              <stop offset="0" stop-color="#fcd635" />
-              <stop offset="1" stop-color="#f7a928" />
-            </linearGradient>
-          </defs>
-          <path
-            fill="url(#b)"
-            d="M-1220 1212.362c-11.656 8.326-86.446-44.452-100.77-44.568-14.324-.115-89.956 51.449-101.476 42.936-11.52-8.513 15.563-95.952 11.247-109.61-4.316-13.658-76.729-69.655-72.193-83.242 4.537-13.587 96.065-14.849 107.721-23.175 11.656-8.325 42.535-94.497 56.86-94.382 14.323.116 43.807 86.775 55.327 95.288 11.52 8.512 103.017 11.252 107.334 24.91 4.316 13.658-68.99 68.479-73.527 82.066-4.536 13.587 21.133 101.451 9.477 109.777z"
-            color="#000"
-            overflow="visible"
-            transform="matrix(.04574 0 0 .04561 68.85 -40.34)"
-            style="marker: none"
-          />
-        </svg>
-      </div>
-      <div class="checkbox">
-        <input
-          type="checkbox"
-          :id="'option' + i"
-          :value="movie.title"
-          v-model="watchedList"
-        />
-        Watched
+  <div class="container px-5">
+    <h3 class="mt-3">Movie list</h3>
+    <div class="post row gx-5">
+      <div
+        class="poster col-xs-12 col-md-4 col-lg-6 col-md-6"
+        v-for="(movie, i) in movies"
+        :key="movie.id"
+      >
+        <div class="card mb-3" style="max-width: 540px">
+          <div class="row g-0">
+            <div class="col-md-4">
+              <img
+                :src="movie.picture"
+                :alt="movie.title"
+                class="img-fluid rounded-start"
+              />
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title">{{ movie.title }}</h5>
+                <p class="card-text">
+                  <svg
+                    v-for="(_, i) in parseInt((movie.score * 5) / 100)"
+                    :key="i"
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    width="16"
+                    height="16"
+                  >
+                    <defs>
+                      <linearGradient
+                        id="b"
+                        x1="-1483.396"
+                        x2="-1155.767"
+                        y1="1056.787"
+                        y2="1056.787"
+                        gradientUnits="userSpaceOnUse"
+                        xlink:href="#a"
+                      />
+                      <linearGradient id="a">
+                        <stop offset="0" stop-color="#fcd635" />
+                        <stop offset="1" stop-color="#f7a928" />
+                      </linearGradient>
+                    </defs>
+                    <path
+                      fill="url(#b)"
+                      d="M-1220 1212.362c-11.656 8.326-86.446-44.452-100.77-44.568-14.324-.115-89.956 51.449-101.476 42.936-11.52-8.513 15.563-95.952 11.247-109.61-4.316-13.658-76.729-69.655-72.193-83.242 4.537-13.587 96.065-14.849 107.721-23.175 11.656-8.325 42.535-94.497 56.86-94.382 14.323.116 43.807 86.775 55.327 95.288 11.52 8.512 103.017 11.252 107.334 24.91 4.316 13.658-68.99 68.479-73.527 82.066-4.536 13.587 21.133 101.451 9.477 109.777z"
+                      color="#000"
+                      overflow="visible"
+                      transform="matrix(.04574 0 0 .04561 68.85 -40.34)"
+                      style="marker: none"
+                    />
+                  </svg>
+                </p>
+                <p class="card-text">
+                  <small class="text-muted"
+                    ><div class="form-check">
+                      <input
+                        type="checkbox"
+                        :id="'checked' + i"
+                        :value="movie.title"
+                        v-model="watchedList"
+                        class="form-check-input"
+                      />
+                      <label class="form-check-label" :for="'checked' + i"
+                        >Watched</label
+                      >
+                    </div></small
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <hr />
-  <h3>Controls</h3>
-  <div>
-    <span>My fav movie: {{ favoriteMovie || 'none chosen yet :( ' }}</span>
-    <br />
-    <br />
-    <select @input="(select) => (favoriteMovie = select.target.value)">
-      <option disabled value="">Please select a favorite!</option>
-      <option v-for="movie in movies" :value="movie.title" :key="movie.id">
-        {{ movie.title }}
-        <template v-if="favoriteMovie == movie.title">😍</template>
-      </option>
-    </select>
-  </div>
-
-  <hr />
-
-  <div>
-    <span>Movies watched this year: {{ watchedList }}</span>
-    <br />
-    <br />
-    <select v-model="watchedList" multiple>
-      <option v-for="movie in movies" :key="movie.id">
-        {{ movie.title }}
-      </option>
-    </select>
-  </div>
-
-  <hr />
-  <div>
-    <span>Movies watched this year: {{ watchedList }}</span>
-    <br />
-    <br />
-
-    <div v-for="(movie, i) in movies" :key="movie.id">
-      <input
-        type="checkbox"
-        :id="'option' + i"
-        :value="movie.title"
-        v-model="watchedList"
-      />
-      <label :for="'option' + i">{{ movie.title }}</label>
+    <hr />
+    <h3>Controls</h3>
+    <div>
+      <span>My fav movie: {{ favoriteMovie || "none chosen yet :( " }}</span>
       <br />
+      <br />
+      <select
+        @input="(select) => (favoriteMovie = select.target.value)"
+        class="form-select"
+      >
+        <option disabled value="">Please select a favorite!</option>
+        <option v-for="movie in movies" :value="movie.title" :key="movie.id">
+          {{ movie.title }}
+          <template v-if="favoriteMovie == movie.title">😍</template>
+        </option>
+      </select>
+    </div>
+
+    <hr />
+
+    <div>
+      <div>
+        Movies watched this year:
+        <div class="my-3">
+          <MovieChip v-for="movie in watchedList" :key="movie.id">
+            {{ movie }}
+          </MovieChip>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+
+      <select class="mt-1 form-select" v-model="watchedList" multiple>
+        <option v-for="movie in movies" :key="movie.id">
+          {{ movie.title }}
+        </option>
+      </select>
+    </div>
+
+    <hr />
+    <div>
+      <span>Movies watched this year: </span>
+      <div class="my-4">
+        <MovieChip v-for="movie in watchedList" :key="movie.id">
+          {{ movie }}
+        </MovieChip>
+        <div class="clearfix"></div>
+      </div>
+
+      <div v-for="(movie, i) in movies" :key="movie.id">
+        <div class="form-check">
+          <input
+            type="checkbox"
+            :id="'option' + i"
+            :value="movie.title"
+            v-model="watchedList"
+            class="form-check-input"
+          />
+          <label :for="'option' + i" class="form-check-label">{{
+            movie.title
+          }}</label>
+        </div>
+
+        <br />
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.post {
-  display: flex;
-  flex-direction: column;
-}
-
-.poster {
-  margin-bottom: 10px;
-}
-
 .post img {
-  height: 150px;
-  width: 100px;
-  border-radius: 10px;
-  float: left;
-  margin-right: 10px;
+  width: 100%;
+  height: 240px;
 }
 
 .movie__title {
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 10px;
+}
+
+input[type="checkbox"],
+label,
+select {
+  cursor: pointer;
 }
 </style>
